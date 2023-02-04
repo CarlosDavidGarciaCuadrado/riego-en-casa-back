@@ -43,15 +43,20 @@ public class ManagerDatosAmbienteImplement implements ManagerDatosAmbiente{
             throw new ExceptionManager(e);
         } catch (SQLException e) {
             throw new ExceptionManager(e);
+        }finally {
+            try {
+                mngrConexion.closeConexion();
+            } catch (ExceptionConexion e) {
+                throw new ExceptionManager(e);
+            }
         }
     }
 
     @Override
     public List<DatosAmbiente> listAll() throws ExceptionManager {
-        List<DatosAmbiente> lista = null;
+        List<DatosAmbiente> lista = new ArrayList<>();
         try {
-            mngrConexion.conexion.open();
-            lista = new ArrayList<>();
+            mngrConexion.openConexion();
             lista = datosAmbienteDao.getAll();
             mngrConexion.conexion.getConexion().commit();
         } catch (ExceptionConexion e) {
@@ -65,7 +70,7 @@ public class ManagerDatosAmbienteImplement implements ManagerDatosAmbiente{
             throw new ExceptionManager(e);
         }finally {
             try {
-                mngrConexion.conexion.close();
+                mngrConexion.closeConexion();
             } catch (ExceptionConexion e) {
                 throw new ExceptionManager(e);
             }
@@ -91,7 +96,7 @@ public class ManagerDatosAmbienteImplement implements ManagerDatosAmbiente{
             throw new ExceptionManager(e);
         }finally {
             try {
-                mngrConexion.conexion.close();
+                mngrConexion.closeConexion();
             } catch (ExceptionConexion e) {
                 throw new ExceptionManager(e);
             }
@@ -102,7 +107,7 @@ public class ManagerDatosAmbienteImplement implements ManagerDatosAmbiente{
     @Override
     public void delete(int id) throws ExceptionManager {
         try {
-            mngrConexion.conexion.open();
+            mngrConexion.openConexion();
             datosAmbienteDao.delete(id);
             mngrConexion.conexion.getConexion().commit();
         } catch (ExceptionConexion e) {
@@ -116,7 +121,7 @@ public class ManagerDatosAmbienteImplement implements ManagerDatosAmbiente{
             throw new ExceptionManager(e);
         }finally {
             try {
-                mngrConexion.conexion.close();
+                mngrConexion.closeConexion();
             } catch (ExceptionConexion e) {
                 throw new ExceptionManager(e);
             }
@@ -126,7 +131,7 @@ public class ManagerDatosAmbienteImplement implements ManagerDatosAmbiente{
     @Override
     public void deleteAll() throws ExceptionManager {
         try {
-            mngrConexion.conexion.open();
+            mngrConexion.openConexion();
             datosAmbienteDao.deleteAll();
             mngrConexion.conexion.getConexion().commit();
         } catch (ExceptionConexion e) {
@@ -140,7 +145,7 @@ public class ManagerDatosAmbienteImplement implements ManagerDatosAmbiente{
             throw new ExceptionManager(e);
         }finally {
             try {
-                mngrConexion.conexion.close();
+                mngrConexion.closeConexion();
             } catch (ExceptionConexion e) {
                 throw new ExceptionManager(e);
             }

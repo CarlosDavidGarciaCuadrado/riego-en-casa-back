@@ -1,7 +1,6 @@
 package com.example.riegoback.db;
 
 import com.example.riegoback.Exceptions.ExceptionConexion;
-
 import java.sql.Connection;
 
 public class MngrConexion {
@@ -10,7 +9,7 @@ public class MngrConexion {
 
    private MngrConexion() throws ExceptionConexion {
        this.conexion = new Conexion();
-       conexion.open();
+       openConexion();
    }
 
     private static MngrConexion instance;

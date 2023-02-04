@@ -10,17 +10,12 @@ public class Conexion {
 
     public void open()throws ExceptionConexion {
         try {
-            Class.forName("org.mariadb.jdbc.Driver");
-            conexion = DriverManager.getConnection("jdbc:mariadb://localhost:3306/siembraencasa", "root", "");
-            //Class.forName("com.mysql.cj.jdbc.Driver");
-            //conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/siembraencasa", "root", "toor");
+            Class.forName("org.mariadb.jdbc.Driver");//Class.forName("com.mysql.cj.jdbc.Driver");
+            conexion = DriverManager.getConnection("jdbc:mariadb://localhost:3306/siembraencasa", "root", "");//("jdbc:mysql://localhost:3306/siembraencasa", "root", "toor");
             conexion.setAutoCommit(false);
-        } catch (ClassNotFoundException e) {
-            throw new ExceptionConexion("ERROR AL CONECTAR. "+e);
         } catch (Exception e){
             throw new ExceptionConexion(e);
         }
-
     }
 
     public Connection getConexion(){

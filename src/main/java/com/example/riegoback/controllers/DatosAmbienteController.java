@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequestMapping(path = "/IrrigationSystem")
 @CrossOrigin(origins = "*")
-@RequestMapping(path = "/demo")
 public class DatosAmbienteController {
 
     @Autowired
