@@ -21,7 +21,7 @@ public class DatosAmbienteDaoImplement implements DatosAmbienteDao{
 
     @Override
     public void save(DatosAmbiente datosAmbiente) throws ExceptionDao{
-        String INSERT = "INSERT INTO datos(tempAmbiente, humTerreno, humAmbiente, phTerreno, fecha)values(?,?,?,?,?)";
+        String INSERT = "INSERT INTO datos(tempAmbiente, humTerreno, humAmbiente, phTerreno, fecha, estadoRiego, tiempoRiego)values(?,?,?,?,?,?,?)";
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = mngrConexion.getConexion().prepareStatement(INSERT);
@@ -30,6 +30,8 @@ public class DatosAmbienteDaoImplement implements DatosAmbienteDao{
             preparedStatement.setInt(3, datosAmbiente.getHumAmbiente());
             preparedStatement.setInt(4, datosAmbiente.getPhTerreno());
             preparedStatement.setDate(5, datosAmbiente.getFecha());
+            preparedStatement.setString(6, datosAmbiente.getEstadoRiego());
+            preparedStatement.setLong(7, datosAmbiente.getTiempoRiego());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new ExceptionDao(e);
@@ -46,7 +48,7 @@ public class DatosAmbienteDaoImplement implements DatosAmbienteDao{
 
     @Override
     public List<DatosAmbiente> getAll() throws ExceptionDao{
-        String SELECT = "SELECT codigo, tempAmbiente, humTerreno, humAmbiente, phTerreno, fecha FROM datos";
+        String SELECT = "SELECT codigo, tempAmbiente, humTerreno, humAmbiente, phTerreno, fecha, estadoRiego, tiempoRiego FROM datos";
         DatosAmbiente datosAmbiente = null;
         List<DatosAmbiente> lista = new ArrayList<>();
         PreparedStatement preparedStatement = null;
@@ -63,6 +65,8 @@ public class DatosAmbienteDaoImplement implements DatosAmbienteDao{
                     datosAmbiente.setHumAmbiente(resultSet.getInt("humAmbiente"));
                     datosAmbiente.setPhTerreno(resultSet.getInt("phTerreno"));
                     datosAmbiente.setFecha(resultSet.getDate("fecha"));
+                    datosAmbiente.setEstadoRiego(resultSet.getString("estadoRiego"));
+                    datosAmbiente.setTiempoRiego(resultSet.getLong("tiempoRiego"));
                     lista.add(datosAmbiente);
                 }
             }
@@ -98,6 +102,8 @@ public class DatosAmbienteDaoImplement implements DatosAmbienteDao{
                     datosAmbiente.setHumAmbiente(resultSet.getInt("humAmbiente"));
                     datosAmbiente.setPhTerreno(resultSet.getInt("phTerreno"));
                     datosAmbiente.setFecha(resultSet.getDate("fecha"));
+                    datosAmbiente.setEstadoRiego(resultSet.getString("estadoRiego"));
+                    datosAmbiente.setTiempoRiego(resultSet.getLong("tiempoRiego"));
                 }
             }
         } catch (ExceptionConexion e) {

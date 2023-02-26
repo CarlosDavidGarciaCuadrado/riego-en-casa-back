@@ -21,21 +21,20 @@ public class DatosAmbienteController {
     ManagerDatosAmbiente managerDatosAmbiente;
 
     @PostMapping("/Datos/save")
-    public void save(@RequestParam String tempAmbiente, String humTerreno, String humAmbiente, String phTerreno) throws ExceptionController {
-
-        int tempA = Integer.parseInt(tempAmbiente);
-        int humT = Integer.parseInt(humTerreno);
-        int humA = Integer.parseInt(humAmbiente);
-        int ph = Integer.parseInt(phTerreno);
+    public void save(@RequestParam String tempAmbiente, @RequestParam String humTerreno,
+                     @RequestParam String humAmbiente, @RequestParam String phTerreno,
+                     @RequestParam String estadoRiego, @RequestParam String tiempoRiego) throws ExceptionController {
         SimpleDateFormat formatt= new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date(System.currentTimeMillis());
         Date fecha = Date.valueOf(formatt.format(date));
         DatosAmbiente datosAmbiente = new DatosAmbiente();
-        datosAmbiente.setTempAmbiente(tempA);
-        datosAmbiente.setHumTerreno(humT);
-        datosAmbiente.setTempAmbiente(humA);
-        datosAmbiente.setPhTerreno(ph);
+        datosAmbiente.setTempAmbiente(Integer.parseInt(tempAmbiente));
+        datosAmbiente.setHumTerreno(Integer.parseInt(humTerreno));
+        datosAmbiente.setHumAmbiente(Integer.parseInt(humAmbiente));
+        datosAmbiente.setPhTerreno(Integer.parseInt(phTerreno));
         datosAmbiente.setFecha(fecha);
+        datosAmbiente.setEstadoRiego(estadoRiego);
+        datosAmbiente.setTiempoRiego(Long.parseLong(tiempoRiego));
         try {
             managerDatosAmbiente.save(datosAmbiente);
         } catch (ExceptionManager e) {
@@ -85,6 +84,11 @@ public class DatosAmbienteController {
             throw new ExceptionController(e);
         }
         return datosAmbiente;
+    }
+
+    @GetMapping("/hola")
+    public String hola() {
+        return "hola";
     }
 
 }

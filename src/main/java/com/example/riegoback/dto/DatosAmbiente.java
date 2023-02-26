@@ -10,17 +10,37 @@ public class DatosAmbiente {
     private int humAmbiente;
     private int phTerreno;
     private Date fecha;
+    private String estadoRiego;
+    private Long tiempoRiego;
 
     public DatosAmbiente() {
     }
 
-    public DatosAmbiente(int codigo, int tempAmbiente, int humTerreno, int humAmbiente, int phTerreno, Date fecha) {
+    public DatosAmbiente(int codigo, int tempAmbiente, int humTerreno, int humAmbiente, int phTerreno, Date fecha, String estadoRiego, Long tiempoRiego) {
         this.codigo = codigo;
         this.tempAmbiente = tempAmbiente;
         this.humTerreno = humTerreno;
         this.humAmbiente = humAmbiente;
         this.phTerreno = phTerreno;
         this.fecha = fecha;
+        this.estadoRiego = estadoRiego;
+        this.tiempoRiego = tiempoRiego;
+    }
+
+    public String getEstadoRiego() {
+        return estadoRiego;
+    }
+
+    public void setEstadoRiego(String estadoRiego) {
+        this.estadoRiego = estadoRiego;
+    }
+
+    public Long getTiempoRiego() {
+        return tiempoRiego;
+    }
+
+    public void setTiempoRiego(Long tiempoRiego) {
+        this.tiempoRiego = tiempoRiego;
     }
 
     public int getCodigo() {
