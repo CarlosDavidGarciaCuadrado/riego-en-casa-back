@@ -3,10 +3,10 @@ package com.example.riegoback.managers;
 import com.example.riegoback.Exceptions.ExceptionConexion;
 import com.example.riegoback.Exceptions.ExceptionDao;
 import com.example.riegoback.Exceptions.ExceptionManager;
-import com.example.riegoback.dao.DatosAmbienteDao;
+import com.example.riegoback.config.Constants;
+import com.example.riegoback.dao.AhorroDao;
 import com.example.riegoback.db.MngrConexion;
-import com.example.riegoback.dto.DatosAhorro;
-import com.example.riegoback.dto.DatosAmbiente;
+import com.example.riegoback.dto.Ahorro;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.sql.SQLException;
@@ -14,20 +14,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ManagerDatosAmbienteImplement implements ManagerDatosAmbiente{
+public class ManagerAhorroImplement implements ManagerAhorro{
 
-    @Autowired
-    DatosAmbienteDao datosAmbienteDao;
     MngrConexion mngrConexion = MngrConexion.getInstance();
 
-    public ManagerDatosAmbienteImplement() throws ExceptionConexion {
+    @Autowired
+    AhorroDao ahorroDao;
+
+    public ManagerAhorroImplement() throws ExceptionConexion {
     }
 
     @Override
-    public void saveDatos(DatosAmbiente datosAmbiente) throws ExceptionManager {
+    public void saveAhorro(Ahorro ahorro) throws ExceptionManager {
         try {
             mngrConexion.openConexion();
-                datosAmbienteDao.saveDatos(datosAmbiente);
+            if(ahorro.getEstadoRiego().equals(Constants.ESTADO_FINAL)){
+                ahorro.setAguaUsada(calcularAguaUsada(ahorro.getTiempoRiego()));
+            }
+            ahorroDao.saveAhorro(ahorro);
             mngrConexion.conexion.getConexion().commit();
         } catch (ExceptionDao e) {
             try {
@@ -52,11 +56,11 @@ public class ManagerDatosAmbienteImplement implements ManagerDatosAmbiente{
     }
 
     @Override
-    public List<DatosAmbiente> listAllDatos() throws ExceptionManager {
-        List<DatosAmbiente> lista = new ArrayList<>();
+    public List<Ahorro> listAllAhorro() throws ExceptionManager {
+        List<Ahorro> lista = new ArrayList<>();
         try {
             mngrConexion.openConexion();
-            lista = datosAmbienteDao.getAllDatos();
+            lista = ahorroDao.getAllAhorro();
             mngrConexion.conexion.getConexion().commit();
         } catch (ExceptionConexion e) {
             try {
@@ -78,11 +82,11 @@ public class ManagerDatosAmbienteImplement implements ManagerDatosAmbiente{
     }
 
     @Override
-    public DatosAmbiente getByIdDatos(String id) throws ExceptionManager {
-        DatosAmbiente datosAmbiente = null;
+    public Ahorro getByIdAhorro(Long id) throws ExceptionManager {
+        Ahorro ahorro = null;
         try {
             mngrConexion.openConexion();
-            datosAmbiente = datosAmbienteDao.getByIdDatos(id);
+            ahorro = ahorroDao.getByIdAhorro(id);
             mngrConexion.conexion.getConexion().commit();
         } catch (ExceptionConexion e) {
             try {
@@ -100,63 +104,15 @@ public class ManagerDatosAmbienteImplement implements ManagerDatosAmbiente{
                 throw new ExceptionManager(e);
             }
         }
-        return datosAmbiente;
+        return ahorro;
     }
 
     @Override
-    public void delete(String id) throws ExceptionManager {
+    public List<Ahorro> getByUuidAhorro(String uuid) throws ExceptionManager {
+        List<Ahorro> lista = new ArrayList<>();
         try {
             mngrConexion.openConexion();
-            datosAmbienteDao.delete(id);
-            mngrConexion.conexion.getConexion().commit();
-        } catch (ExceptionConexion e) {
-            try {
-                mngrConexion.conexion.getConexion().rollback();
-            } catch (SQLException ex) {
-                throw new ExceptionManager(ex);
-            }
-            throw new ExceptionManager(e);
-        }catch (Exception e){
-            throw new ExceptionManager(e);
-        }finally {
-            try {
-                mngrConexion.closeConexion();
-            } catch (ExceptionConexion e) {
-                throw new ExceptionManager(e);
-            }
-        }
-    }
-
-    @Override
-    public void deleteAll() throws ExceptionManager {
-        try {
-            mngrConexion.openConexion();
-            datosAmbienteDao.deleteAll();
-            mngrConexion.conexion.getConexion().commit();
-        } catch (ExceptionConexion e) {
-            try {
-                mngrConexion.conexion.getConexion().rollback();
-            } catch (SQLException ex) {
-                throw new ExceptionManager(ex);
-            }
-            throw new ExceptionManager(e);
-        }catch (Exception e){
-            throw new ExceptionManager(e);
-        }finally {
-            try {
-                mngrConexion.closeConexion();
-            } catch (ExceptionConexion e) {
-                throw new ExceptionManager(e);
-            }
-        }
-    }
-
-    @Override
-    public List<DatosAhorro> getAll() throws ExceptionManager {
-        List<DatosAhorro> lista;
-        try {
-            mngrConexion.openConexion();
-            lista = datosAmbienteDao.getAll();
+            lista = ahorroDao.getByUiidAhorro(uuid);
             mngrConexion.conexion.getConexion().commit();
         } catch (ExceptionConexion e) {
             try {
@@ -175,6 +131,53 @@ public class ManagerDatosAmbienteImplement implements ManagerDatosAmbiente{
             }
         }
         return lista;
+    }
+
+
+    @Override
+    public void delete(Long id) throws ExceptionManager {
+
+    }
+
+    @Override
+    public void deleteAllAhorro() throws ExceptionManager {
+        try {
+            mngrConexion.openConexion();
+            ahorroDao.deleteAllAhorro();
+            mngrConexion.conexion.getConexion().commit();
+        } catch (ExceptionConexion e) {
+            try {
+                mngrConexion.conexion.getConexion().rollback();
+            } catch (SQLException ex) {
+                throw new ExceptionManager(ex);
+            }
+            throw new ExceptionManager(e);
+        }catch (Exception e){
+            throw new ExceptionManager(e);
+        }finally {
+            try {
+                mngrConexion.closeConexion();
+            } catch (ExceptionConexion e) {
+                throw new ExceptionManager(e);
+            }
+        }
+    }
+
+
+    private Long calcularAguaUsada(Long timeMili){
+        return Constants.FLUJO_DE_AGUA * getHoras(timeMili);
+    }
+
+    private Long getHoras(Long timeMili) {
+        var residuo = timeMili % Constants.HORA_DE_MILI;
+        var horas = (timeMili - residuo) / Constants.HORA_DE_MILI;
+        var mr = residuo % Constants.MINUTO_DE_MILI;
+        var minutos = (residuo - mr) / Constants.MINUTO_DE_MILI;
+        minutos = minutos/Constants.MINUTOS_EN_HORA;
+        var sr = mr % Constants.SEGUNDO_DE_MILI;
+        var segundos = (mr - sr) / Constants.SEGUNDO_DE_MILI;
+        segundos = segundos/Constants.SEGUNDOS_EN_HORA;
+        return horas +  minutos +  segundos;
     }
 
 

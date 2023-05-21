@@ -1,54 +1,20 @@
 package com.example.riegoback.dto;
 
 
-import java.sql.Date;
-
 public class DatosAmbiente {
-    private int codigo;
     private int tempAmbiente;
     private int humTerreno;
     private int humAmbiente;
-    private int phTerreno;
-    private Date fecha;
-    private String estadoRiego;
-    private Long tiempoRiego;
+    private String uuid;
 
     public DatosAmbiente() {
     }
 
-    public DatosAmbiente(int codigo, int tempAmbiente, int humTerreno, int humAmbiente, int phTerreno, Date fecha, String estadoRiego, Long tiempoRiego) {
-        this.codigo = codigo;
+    public DatosAmbiente(int tempAmbiente, int humTerreno, int humAmbiente, String uuid) {
         this.tempAmbiente = tempAmbiente;
         this.humTerreno = humTerreno;
         this.humAmbiente = humAmbiente;
-        this.phTerreno = phTerreno;
-        this.fecha = fecha;
-        this.estadoRiego = estadoRiego;
-        this.tiempoRiego = tiempoRiego;
-    }
-
-    public String getEstadoRiego() {
-        return estadoRiego;
-    }
-
-    public void setEstadoRiego(String estadoRiego) {
-        this.estadoRiego = estadoRiego;
-    }
-
-    public Long getTiempoRiego() {
-        return tiempoRiego;
-    }
-
-    public void setTiempoRiego(Long tiempoRiego) {
-        this.tiempoRiego = tiempoRiego;
-    }
-
-    public int getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(int codigo) {
-        this.codigo = codigo;
+        this.uuid = uuid;
     }
 
     public int getTempAmbiente() {
@@ -75,19 +41,11 @@ public class DatosAmbiente {
         this.humAmbiente = humAmbiente;
     }
 
-    public int getPhTerreno() {
-        return phTerreno;
+    public String getUuid() {
+        return uuid;
     }
 
-    public void setPhTerreno(int phTerreno) {
-        this.phTerreno = phTerreno;
-    }
-
-    public Date getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 }

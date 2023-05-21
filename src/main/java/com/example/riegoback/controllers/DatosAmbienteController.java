@@ -1,16 +1,21 @@
 package com.example.riegoback.controllers;
 
+import com.example.riegoback.Exceptions.ExceptionConexion;
 import com.example.riegoback.Exceptions.ExceptionController;
+import com.example.riegoback.Exceptions.ExceptionDao;
 import com.example.riegoback.Exceptions.ExceptionManager;
+import com.example.riegoback.config.Constants;
+import com.example.riegoback.dto.Ahorro;
 import com.example.riegoback.dto.DatosAmbiente;
 import com.example.riegoback.dto.Respuesta;
+import com.example.riegoback.managers.ManagerAhorro;
 import com.example.riegoback.managers.ManagerDatosAmbiente;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "/IrrigationSystem")
@@ -19,46 +24,44 @@ public class DatosAmbienteController {
 
     @Autowired
     ManagerDatosAmbiente managerDatosAmbiente;
+    @Autowired
+    ManagerAhorro managerAhorro;
 
     @PostMapping("/Datos/save")
     public void save(@RequestParam String tempAmbiente, @RequestParam String humTerreno,
-                     @RequestParam String humAmbiente, @RequestParam String phTerreno,
-                     @RequestParam String estadoRiego, @RequestParam String tiempoRiego) throws ExceptionController {
-        SimpleDateFormat formatt= new SimpleDateFormat("yyyy-MM-dd");
+                     @RequestParam String humAmbiente, @RequestParam String estadoRiego,
+                     @RequestParam String tiempoRiego, @RequestParam String uuid) throws ExceptionController {
+        SimpleDateFormat formatt= new SimpleDateFormat(Constants.FORMAT_DATE);
         Date date = new Date(System.currentTimeMillis());
         Date fecha = Date.valueOf(formatt.format(date));
-        DatosAmbiente datosAmbiente = new DatosAmbiente();
-        datosAmbiente.setTempAmbiente(Integer.parseInt(tempAmbiente));
-        datosAmbiente.setHumTerreno(Integer.parseInt(humTerreno));
-        datosAmbiente.setHumAmbiente(Integer.parseInt(humAmbiente));
-        datosAmbiente.setPhTerreno(Integer.parseInt(phTerreno));
-        datosAmbiente.setFecha(fecha);
-        datosAmbiente.setEstadoRiego(estadoRiego);
-        datosAmbiente.setTiempoRiego(Long.parseLong(tiempoRiego));
+        DatosAmbiente datosAmbiente =
+                new DatosAmbiente(Integer.parseInt(tempAmbiente),Integer.parseInt(humTerreno),Integer.parseInt(humAmbiente),uuid);
+        Ahorro ahorro = new Ahorro(0L, fecha, Long.parseLong(tiempoRiego), 0L, estadoRiego, uuid);
         try {
-            managerDatosAmbiente.save(datosAmbiente);
+            managerDatosAmbiente.saveDatos(datosAmbiente);
+            managerAhorro.saveAhorro(ahorro);
         } catch (ExceptionManager e) {
             throw new ExceptionController(e);
         }
     }
 
     @GetMapping(path = "/Datos/listAll")
-    public @ResponseBody List<DatosAmbiente> listAll(){
-        List<DatosAmbiente> datosAmbiente = new ArrayList<>();
+    public @ResponseBody ResponseEntity<Respuesta> listAll(){
         Respuesta respuesta = new Respuesta();
         try {
-            datosAmbiente = managerDatosAmbiente.listAll();
-            respuesta.setCodigo(0);
-            respuesta.setData(datosAmbiente);
+            respuesta.setCodigo(200);
+            respuesta.setData(managerDatosAmbiente.getAll());
         } catch (ExceptionManager e) {
-            respuesta.setCodigo(1);
+            respuesta.setCodigo(500);
             respuesta.setMensaje(e.getMessage());
+        } catch (ExceptionConexion | ExceptionDao e) {
+            throw new RuntimeException(e);
         }
-        return datosAmbiente;//return respuesta;
+        return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
 
     @GetMapping(path = "/Datos/delete/{id}")
-    public void delete(@RequestParam int id) throws ExceptionController {
+    public void delete(@PathVariable String id) throws ExceptionController {
         try {
             managerDatosAmbiente.delete(id);
         } catch (ExceptionManager e) {
@@ -76,19 +79,31 @@ public class DatosAmbienteController {
     }
 
     @GetMapping(path = "/Datos/getByid/{id}")
-    public @ResponseBody DatosAmbiente getById(@RequestParam int id) throws ExceptionController {
-        DatosAmbiente datosAmbiente = new DatosAmbiente();
+    public @ResponseBody ResponseEntity<Respuesta> getById(@PathVariable String id) throws ExceptionController {
+        Respuesta respuesta = new Respuesta();
         try {
-            datosAmbiente = managerDatosAmbiente.getById(id);
+            respuesta.setCodigo(200);
+            respuesta.setData(managerDatosAmbiente.getByIdDatos(id));
         } catch (ExceptionManager e) {
+            respuesta.setCodigo(500);
+            respuesta.setMensaje(e.getMessage());
             throw new ExceptionController(e);
         }
-        return datosAmbiente;
+        return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
 
-    @GetMapping("/hola")
-    public String hola() {
-        return "hola";
+    @GetMapping(path = "/Ahorro/getByUiid/{uuid}")
+    public @ResponseBody ResponseEntity<Respuesta> getByUuid(@PathVariable String uuid)throws ExceptionController {
+        Respuesta respuesta = new Respuesta();
+        try {
+            respuesta.setCodigo(200);
+            respuesta.setData(managerAhorro.getByUuidAhorro(uuid));
+        } catch (ExceptionManager e) {
+            respuesta.setCodigo(500);
+            respuesta.setMensaje(e.getMessage());
+            throw new ExceptionController(e);
+        }
+        return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
 
 }

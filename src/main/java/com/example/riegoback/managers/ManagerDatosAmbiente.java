@@ -1,13 +1,18 @@
 package com.example.riegoback.managers;
 
+import com.example.riegoback.Exceptions.ExceptionConexion;
+import com.example.riegoback.Exceptions.ExceptionDao;
 import com.example.riegoback.Exceptions.ExceptionManager;
+import com.example.riegoback.dto.Ahorro;
+import com.example.riegoback.dto.DatosAhorro;
 import com.example.riegoback.dto.DatosAmbiente;
 import java.util.List;
 
 public interface ManagerDatosAmbiente {
-    public void save(DatosAmbiente datosAmbiente)throws ExceptionManager;
-    public List<DatosAmbiente> listAll()throws ExceptionManager;
-    public DatosAmbiente getById(int id)throws ExceptionManager;
-    public void delete(int id)throws ExceptionManager;
-    public void deleteAll()throws ExceptionManager;
+    void saveDatos(DatosAmbiente datosAmbiente)throws ExceptionManager;
+    List<DatosAmbiente> listAllDatos()throws ExceptionManager;
+    DatosAmbiente getByIdDatos(String id)throws ExceptionManager;
+    void delete(String id)throws ExceptionManager;
+    void deleteAll()throws ExceptionManager;
+    List<DatosAhorro> getAll() throws ExceptionDao, ExceptionConexion, ExceptionManager;
 }
