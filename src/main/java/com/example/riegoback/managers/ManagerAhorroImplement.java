@@ -164,20 +164,17 @@ public class ManagerAhorroImplement implements ManagerAhorro{
     }
 
 
-    private Long calcularAguaUsada(Long timeMili){
+    private Float calcularAguaUsada(Long timeMili){
         return Constants.FLUJO_DE_AGUA * getHoras(timeMili);
     }
 
-    private Long getHoras(Long timeMili) {
+    private Float getHoras(Long timeMili) {
         var residuo = timeMili % Constants.HORA_DE_MILI;
         var horas = (timeMili - residuo) / Constants.HORA_DE_MILI;
         var mr = residuo % Constants.MINUTO_DE_MILI;
         var minutos = (residuo - mr) / Constants.MINUTO_DE_MILI;
-        minutos = minutos/Constants.MINUTOS_EN_HORA;
-        var sr = mr % Constants.SEGUNDO_DE_MILI;
-        var segundos = (mr - sr) / Constants.SEGUNDO_DE_MILI;
-        segundos = segundos/Constants.SEGUNDOS_EN_HORA;
-        return horas +  minutos +  segundos;
+        Float min = minutos/Constants.MINUTOS_EN_HORA;
+        return horas + min;
     }
 
 

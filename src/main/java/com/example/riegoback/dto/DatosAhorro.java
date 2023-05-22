@@ -5,14 +5,14 @@ import java.util.Date;
 public class DatosAhorro {
     private Date fecha;
     private Long tiempoRiego;
-    private Long aguaUsada;
+    private Float aguaUsada;
     private String estadoRiego;
     private String uuid;
     private int tempAmbiente;
     private int humTerreno;
     private int humAmbiente;
 
-    public DatosAhorro(Date fecha, Long tiempoRiego, Long aguaUsada, String estadoRiego, String uuid, int tempAmbiente, int humTerreno, int humAmbiente) {
+    public DatosAhorro(Date fecha, Long tiempoRiego, Float aguaUsada, String estadoRiego, String uuid, int tempAmbiente, int humTerreno, int humAmbiente) {
         this.fecha = fecha;
         this.tiempoRiego = tiempoRiego;
         this.aguaUsada = aguaUsada;
@@ -42,11 +42,11 @@ public class DatosAhorro {
         this.tiempoRiego = tiempoRiego;
     }
 
-    public Long getAguaUsada() {
+    public Float getAguaUsada() {
         return aguaUsada;
     }
 
-    public void setAguaUsada(Long aguaUsada) {
+    public void setAguaUsada(Float aguaUsada) {
         this.aguaUsada = aguaUsada;
     }
 

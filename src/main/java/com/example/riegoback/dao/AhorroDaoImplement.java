@@ -24,7 +24,7 @@ public class AhorroDaoImplement implements AhorroDao{
             preparedStatement = mngrConexion.getConexion().prepareStatement(INSERT);
             preparedStatement.setDate(1, (Date) ahorro.getFecha());
             preparedStatement.setLong(2,ahorro.getTiempoRiego());
-            preparedStatement.setLong(3, ahorro.getAguaUsada());
+            preparedStatement.setFloat(3, ahorro.getAguaUsada());
             preparedStatement.setString(4, ahorro.getEstadoRiego());
             preparedStatement.setString(5, ahorro.getUuid());
 
@@ -58,7 +58,7 @@ public class AhorroDaoImplement implements AhorroDao{
                     ahorro.setId(resultSet.getLong("id"));
                     ahorro.setFecha(resultSet.getTimestamp("fecha"));
                     ahorro.setTiempoRiego(resultSet.getLong("tiempoRiego"));
-                    ahorro.setAguaUsada(resultSet.getLong("aguaUsada"));
+                    ahorro.setAguaUsada(resultSet.getFloat("aguaUsada"));
                     ahorro.setEstadoRiego(resultSet.getString("estadoRiego"));
                     ahorro.setUuid(resultSet.getString("uuid"));
                     lista.add(ahorro);
@@ -92,7 +92,7 @@ public class AhorroDaoImplement implements AhorroDao{
                     ahorro = new Ahorro();
                     ahorro.setFecha(resultSet.getDate("fecha"));
                     ahorro.setTiempoRiego(resultSet.getLong("tiempoRiego"));
-                    ahorro.setAguaUsada(resultSet.getLong("aguaUsada"));
+                    ahorro.setAguaUsada(resultSet.getFloat("aguaUsada"));
                     ahorro.setEstadoRiego(resultSet.getString("estadoRiego"));
                     ahorro.setUuid(resultSet.getString("uuid"));
                 }
@@ -127,7 +127,7 @@ public class AhorroDaoImplement implements AhorroDao{
                     ahorro = new Ahorro();
                     ahorro.setFecha(resultSet.getDate("fecha"));
                     ahorro.setTiempoRiego(resultSet.getLong("tiempoRiego"));
-                    ahorro.setAguaUsada(resultSet.getLong("aguaUsada"));
+                    ahorro.setAguaUsada(resultSet.getFloat("aguaUsada"));
                     ahorro.setEstadoRiego(resultSet.getString("estadoRiego"));
                     ahorro.setUuid(resultSet.getString("uuid"));
                     lista.add(ahorro);

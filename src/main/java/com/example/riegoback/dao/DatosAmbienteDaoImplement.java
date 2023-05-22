@@ -175,7 +175,7 @@ public class DatosAmbienteDaoImplement implements DatosAmbienteDao{
                     datosAhorro.setHumAmbiente(resultSet.getInt("humAmbiente"));
                     datosAhorro.setEstadoRiego(resultSet.getString("estadoRiego"));
                     datosAhorro.setFecha(resultSet.getTimestamp("fecha"));
-                    datosAhorro.setAguaUsada(resultSet.getLong("aguaUsada"));
+                    datosAhorro.setAguaUsada(resultSet.getFloat("aguaUsada"));
                     datosAhorro.setTiempoRiego(resultSet.getLong("tiempoRiego"));
                     lista.add(datosAhorro);
                 }

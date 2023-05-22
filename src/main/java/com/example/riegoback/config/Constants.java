@@ -6,7 +6,5 @@ public class Constants {
     public static final Integer FLUJO_DE_AGUA = 5;
     public static final Integer HORA_DE_MILI = 3600000;
     public static final Integer MINUTO_DE_MILI = 60000;
-    public static final Integer SEGUNDO_DE_MILI = 1000;
-    public static final Integer MINUTOS_EN_HORA = 60;
-    public static final Integer SEGUNDOS_EN_HORA = 3600;
+    public static final Float MINUTOS_EN_HORA = 60F;
 }

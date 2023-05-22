@@ -36,7 +36,7 @@ public class DatosAmbienteController {
         Date fecha = Date.valueOf(formatt.format(date));
         DatosAmbiente datosAmbiente =
                 new DatosAmbiente(Integer.parseInt(tempAmbiente),Integer.parseInt(humTerreno),Integer.parseInt(humAmbiente),uuid);
-        Ahorro ahorro = new Ahorro(0L, fecha, Long.parseLong(tiempoRiego), 0L, estadoRiego, uuid);
+        Ahorro ahorro = new Ahorro(0L, fecha, Long.parseLong(tiempoRiego), 0F, estadoRiego, uuid);
         try {
             managerDatosAmbiente.saveDatos(datosAmbiente);
             managerAhorro.saveAhorro(ahorro);

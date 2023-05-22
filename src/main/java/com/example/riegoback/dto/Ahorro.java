@@ -6,11 +6,11 @@ public class Ahorro {
     private Long id;
     private Date fecha;
     private Long tiempoRiego;
-    private Long aguaUsada;
+    private Float aguaUsada;
     private String estadoRiego;
     private String uuid;
 
-    public Ahorro(Long id, Date fecha, Long tiempoRiego, Long aguaUsada,String estadoRiego, String uuid) {
+    public Ahorro(Long id, Date fecha, Long tiempoRiego, Float aguaUsada,String estadoRiego, String uuid) {
         this.id = id;
         this.fecha = fecha;
         this.tiempoRiego = tiempoRiego;
@@ -46,11 +46,11 @@ public class Ahorro {
         this.tiempoRiego = tiempoRiego;
     }
 
-    public Long getAguaUsada() {
+    public Float getAguaUsada() {
         return aguaUsada;
     }
 
-    public void setAguaUsada(Long aguaUsada) {
+    public void setAguaUsada(Float aguaUsada) {
         this.aguaUsada = aguaUsada;
     }
 
