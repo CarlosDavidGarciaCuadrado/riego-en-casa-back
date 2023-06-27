@@ -5,7 +5,9 @@ import com.example.riegoback.Exceptions.ExceptionDao;
 import com.example.riegoback.db.MngrConexion;
 import com.example.riegoback.dto.DatosAhorro;
 import com.example.riegoback.dto.DatosAmbiente;
+import com.example.riegoback.dto.SumaAguaUsada;
 import org.springframework.stereotype.Repository;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,7 +32,6 @@ public class DatosAmbienteDaoImplement implements DatosAmbienteDao{
             preparedStatement.setInt(2,datosAmbiente.getTempAmbiente());
             preparedStatement.setInt(3, datosAmbiente.getHumTerreno());
             preparedStatement.setInt(4, datosAmbiente.getHumAmbiente());
-
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new ExceptionDao(e);
@@ -156,9 +157,36 @@ public class DatosAmbienteDaoImplement implements DatosAmbienteDao{
     }
 
     @Override
-    public List<DatosAhorro> getAll() throws ExceptionDao, ExceptionConexion {
-        String SELECT = "SELECT d.uuid, d.tempAmbiente, d.humTerreno, d.humAmbiente, a.estadoRiego, a.fecha, a.aguaUsada, a.tiempoRiego " +
-                "FROM datos d INNER JOIN ahorro a ON d.uuid = a.uuid where a.estadoRiego = 'Final'";
+    public List<DatosAhorro>
+    getAll() throws ExceptionDao{
+        String SELECT = "Select \n" +
+                "inicioRiego.uuid, inicioRiego.tempAmbiente as tempAmbienteInicial, finalRiego.tempAmbiente as tempAmbienteFinal, \n" +
+                "inicioRiego.humTerreno as humTerrenoInicial, finalRiego.humTerreno as humTerrenoFinal, \n" +
+                "inicioRiego.fecha as fechaInicio, finalRiego.fecha as fechaFinal,\n" +
+                "finalRiego.aguaUsada, finalRiego.tiempoRiego \n" +
+                "FROM (SELECT d.uuid, d.tempAmbiente, d.humTerreno, d.humAmbiente, a.estadoRiego, a.fecha, a.aguaUsada, a.tiempoRiego\n" +
+                "   FROM ahorro a\n" +
+                "   INNER JOIN datos d\n" +
+                "   ON d.idDatos = a.iddatos\n" +
+                "   WHERE estadoRiego = 'Inicio'\n" +
+                "   AND EXISTS (\n" +
+                "       SELECT estadoRiego\n" +
+                "       FROM ahorro r2\n" +
+                "       WHERE r2.estadoRiego = 'Final'\n" +
+                "       AND r2.uuid = a.uuid\n" +
+                ")) as inicioRiego \n" +
+                "inner join (SELECT d.uuid, d.tempAmbiente, d.humTerreno, d.humAmbiente, a.estadoRiego, a.fecha, a.aguaUsada, a.tiempoRiego\n" +
+                "   FROM ahorro a\n" +
+                "   INNER JOIN datos d\n" +
+                "   ON d.idDatos = a.iddatos\n" +
+                "   WHERE estadoRiego = 'Final'\n" +
+                "   AND EXISTS (SELECT estadoRiego\n" +
+                "       FROM ahorro r2\n" +
+                "       WHERE r2.estadoRiego = 'Inicio'\n" +
+                "       AND r2.uuid = a.uuid\n" +
+                ")) as finalRiego \n" +
+                "ON inicioRiego.uuid = finalRiego.uuid\n" +
+                "WHERE YEAR(finalRiego.fecha)=YEAR(CURDATE()) order by finalRiego.fecha asc";
         DatosAhorro datosAhorro = null;
         List<DatosAhorro> lista = new ArrayList<>();
         PreparedStatement preparedStatement = null;
@@ -170,11 +198,78 @@ public class DatosAmbienteDaoImplement implements DatosAmbienteDao{
                 while (resultSet.next()) {
                     datosAhorro = new DatosAhorro();
                     datosAhorro.setUuid(resultSet.getString("uuid"));
-                    datosAhorro.setTempAmbiente(resultSet.getInt("tempAmbiente"));
-                    datosAhorro.setHumTerreno(resultSet.getInt("humTerreno"));
-                    datosAhorro.setHumAmbiente(resultSet.getInt("humAmbiente"));
-                    datosAhorro.setEstadoRiego(resultSet.getString("estadoRiego"));
-                    datosAhorro.setFecha(resultSet.getTimestamp("fecha"));
+                    datosAhorro.setTempAmbienteInicial(resultSet.getInt("tempAmbienteInicial"));
+                    datosAhorro.setTempAmbienteFinal(resultSet.getInt("tempAmbienteFinal"));
+                    datosAhorro.setHumTerrenoInicial(resultSet.getInt("humTerrenoInicial"));
+                    datosAhorro.setHumTerrenoFinal(resultSet.getInt("humTerrenoFinal"));
+                    datosAhorro.setFechaInicio(resultSet.getTimestamp("fechaInicio"));
+                    datosAhorro.setFechaFinal(resultSet.getTimestamp("fechaFinal"));
+                    datosAhorro.setAguaUsada(resultSet.getFloat("aguaUsada"));
+                    datosAhorro.setTiempoRiego(resultSet.getLong("tiempoRiego"));
+                    lista.add(datosAhorro);
+                }
+            }
+        } catch (Exception e){
+            throw new ExceptionDao(e);
+        }finally {
+            try {
+                resultSet.close();
+                preparedStatement.close();
+            } catch (SQLException e) {
+                throw new ExceptionDao(e);
+            }
+        }
+        return lista;
+    }
+    @Override
+    public List<DatosAhorro> getByDates(String fechaInicio, String fechaFin) throws ExceptionDao {
+        String SELECT = "Select \n" +
+                "inicioRiego.uuid, inicioRiego.tempAmbiente as tempAmbienteInicial, finalRiego.tempAmbiente as tempAmbienteFinal, \n" +
+                "inicioRiego.humTerreno as humTerrenoInicial, finalRiego.humTerreno as humTerrenoFinal, \n" +
+                "inicioRiego.fecha as fechaInicio, finalRiego.fecha as fechaFinal,\n" +
+                "finalRiego.aguaUsada, finalRiego.tiempoRiego \n" +
+                "FROM (SELECT d.uuid, d.tempAmbiente, d.humTerreno, d.humAmbiente, a.estadoRiego, a.fecha, a.aguaUsada, a.tiempoRiego\n" +
+                "   FROM ahorro a\n" +
+                "   INNER JOIN datos d\n" +
+                "   ON d.idDatos = a.iddatos\n" +
+                "   WHERE estadoRiego = 'Inicio'\n" +
+                "   AND EXISTS (\n" +
+                "       SELECT estadoRiego\n" +
+                "       FROM ahorro r2\n" +
+                "       WHERE r2.estadoRiego = 'Final'\n" +
+                "       AND r2.uuid = a.uuid\n" +
+                ")) as inicioRiego \n" +
+                "inner join (SELECT d.uuid, d.tempAmbiente, d.humTerreno, d.humAmbiente, a.estadoRiego, a.fecha, a.aguaUsada, a.tiempoRiego\n" +
+                "   FROM ahorro a\n" +
+                "   INNER JOIN datos d\n" +
+                "   ON d.idDatos = a.iddatos\n" +
+                "   WHERE estadoRiego = 'Final'\n" +
+                "   AND EXISTS (SELECT estadoRiego\n" +
+                "       FROM ahorro r2\n" +
+                "       WHERE r2.estadoRiego = 'Inicio'\n" +
+                "       AND r2.uuid = a.uuid\n" +
+                ")) as finalRiego \n" +
+                "ON inicioRiego.uuid = finalRiego.uuid\n" +
+                "   where finalRiego.fecha >= ? AND finalRiego.fecha <= ? order by finalRiego.fecha asc";
+        DatosAhorro datosAhorro = null;
+        List<DatosAhorro> lista = new ArrayList<>();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = mngrConexion.getConexion().prepareStatement(SELECT);
+            preparedStatement.setString(1, fechaInicio);
+            preparedStatement.setString(2, fechaFin);
+            resultSet = preparedStatement.executeQuery();
+            if(resultSet != null){
+                while (resultSet.next()) {
+                    datosAhorro = new DatosAhorro();
+                    datosAhorro.setUuid(resultSet.getString("uuid"));
+                    datosAhorro.setTempAmbienteInicial(resultSet.getInt("tempAmbienteInicial"));
+                    datosAhorro.setTempAmbienteFinal(resultSet.getInt("tempAmbienteFinal"));
+                    datosAhorro.setHumTerrenoInicial(resultSet.getInt("humTerrenoInicial"));
+                    datosAhorro.setHumTerrenoFinal(resultSet.getInt("humTerrenoFinal"));
+                    datosAhorro.setFechaInicio(resultSet.getTimestamp("fechaInicio"));
+                    datosAhorro.setFechaFinal(resultSet.getTimestamp("fechaFinal"));
                     datosAhorro.setAguaUsada(resultSet.getFloat("aguaUsada"));
                     datosAhorro.setTiempoRiego(resultSet.getLong("tiempoRiego"));
                     lista.add(datosAhorro);
@@ -193,5 +288,68 @@ public class DatosAmbienteDaoImplement implements DatosAmbienteDao{
         return lista;
     }
 
+    @Override
+    public List<SumaAguaUsada> getBySumaConsume(String fechaInicio, String fechaFin) throws ExceptionDao {
+        String SELECT = "SELECT MONTH(a.fecha) AS fecha, SUM(a.aguaUsada) AS aguaUsada, COUNT(1) AS numRiego " +
+                "FROM ahorro a where a.estadoRiego = 'Final' AND a.fecha >= ? AND a.fecha <= ? GROUP by MONTH(a.fecha) asc";
+        SumaAguaUsada datosAhorro = null;
+        List<SumaAguaUsada> lista = new ArrayList<>();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = mngrConexion.getConexion().prepareStatement(SELECT);
+            preparedStatement.setString(1, fechaInicio);
+            preparedStatement.setString(2, fechaFin);
+            resultSet = preparedStatement.executeQuery();
+            if(resultSet != null){
+                while (resultSet.next()) {
+                    datosAhorro = new SumaAguaUsada();
+                    datosAhorro.setFecha(resultSet.getInt("fecha"));
+                    datosAhorro.setSumaAgua(resultSet.getFloat("aguaUsada"));
+                    datosAhorro.setNumRiego(resultSet.getInt("numRiego"));
+                    lista.add(datosAhorro);
+                }
+            }
+        } catch (Exception e){
+            throw new ExceptionDao(e);
+        }finally {
+            try {
+                resultSet.close();
+                preparedStatement.close();
+            } catch (SQLException e) {
+                throw new ExceptionDao(e);
+            }
+        }
+        return lista;
+    }
+
+    @Override
+    public Integer getIdDatos(String uuid) throws ExceptionDao {
+        String SELECT = "SELECT idDatos " +
+                "FROM datos where uuid = ? ";
+        Integer id = 0;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = mngrConexion.getConexion().prepareStatement(SELECT);
+            preparedStatement.setString(1, uuid);
+            resultSet = preparedStatement.executeQuery();
+            if(resultSet != null){
+                while (resultSet.next()) {
+                    id = resultSet.getInt("idDatos");
+                }
+            }
+        } catch (Exception e){
+            throw new ExceptionDao(e);
+        }finally {
+            try {
+                resultSet.close();
+                preparedStatement.close();
+            } catch (SQLException e) {
+                throw new ExceptionDao(e);
+            }
+        }
+        return id;
+    }
 
 }

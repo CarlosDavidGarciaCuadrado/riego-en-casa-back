@@ -3,35 +3,51 @@ package com.example.riegoback.dto;
 import java.util.Date;
 
 public class DatosAhorro {
-    private Date fecha;
+    private Date fechaInicio;
+    private Date fechaFinal;
     private Long tiempoRiego;
     private Float aguaUsada;
-    private String estadoRiego;
     private String uuid;
-    private int tempAmbiente;
-    private int humTerreno;
-    private int humAmbiente;
+    private int tempAmbienteInicial;
+    private int tempAmbienteFinal;
+    private int humTerrenoInicial;
+    private int humTerrenoFinal;
 
-    public DatosAhorro(Date fecha, Long tiempoRiego, Float aguaUsada, String estadoRiego, String uuid, int tempAmbiente, int humTerreno, int humAmbiente) {
-        this.fecha = fecha;
+    public DatosAhorro(Date fecha, Long tiempoRiego, Float aguaUsada, String uuid, int tempAmbiente, int humTerreno, int humAmbiente) {
+        this.fechaInicio = fecha;
         this.tiempoRiego = tiempoRiego;
         this.aguaUsada = aguaUsada;
-        this.estadoRiego = estadoRiego;
         this.uuid = uuid;
-        this.tempAmbiente = tempAmbiente;
-        this.humTerreno = humTerreno;
-        this.humAmbiente = humAmbiente;
+        this.tempAmbienteInicial = tempAmbiente;
+        this.humTerrenoInicial = humTerreno;
+        this.humTerrenoFinal = humAmbiente;
     }
 
     public DatosAhorro() {
     }
 
-    public Date getFecha() {
-        return fecha;
+    public Date getFechaFinal() {
+        return fechaFinal;
     }
 
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
+    public void setFechaFinal(Date fechaFinal) {
+        this.fechaFinal = fechaFinal;
+    }
+
+    public int getTempAmbienteFinal() {
+        return tempAmbienteFinal;
+    }
+
+    public void setTempAmbienteFinal(int tempAmbienteFinal) {
+        this.tempAmbienteFinal = tempAmbienteFinal;
+    }
+
+    public Date getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public void setFechaInicio(Date fechaInicio) {
+        this.fechaInicio = fechaInicio;
     }
 
     public Long getTiempoRiego() {
@@ -50,14 +66,6 @@ public class DatosAhorro {
         this.aguaUsada = aguaUsada;
     }
 
-    public String getEstadoRiego() {
-        return estadoRiego;
-    }
-
-    public void setEstadoRiego(String estadoRiego) {
-        this.estadoRiego = estadoRiego;
-    }
-
     public String getUuid() {
         return uuid;
     }
@@ -66,27 +74,27 @@ public class DatosAhorro {
         this.uuid = uuid;
     }
 
-    public int getTempAmbiente() {
-        return tempAmbiente;
+    public int getTempAmbienteInicial() {
+        return tempAmbienteInicial;
     }
 
-    public void setTempAmbiente(int tempAmbiente) {
-        this.tempAmbiente = tempAmbiente;
+    public void setTempAmbienteInicial(int tempAmbienteInicial) {
+        this.tempAmbienteInicial = tempAmbienteInicial;
     }
 
-    public int getHumTerreno() {
-        return humTerreno;
+    public int getHumTerrenoInicial() {
+        return humTerrenoInicial;
     }
 
-    public void setHumTerreno(int humTerreno) {
-        this.humTerreno = humTerreno;
+    public void setHumTerrenoInicial(int humTerrenoInicial) {
+        this.humTerrenoInicial = humTerrenoInicial;
     }
 
-    public int getHumAmbiente() {
-        return humAmbiente;
+    public int getHumTerrenoFinal() {
+        return humTerrenoFinal;
     }
 
-    public void setHumAmbiente(int humAmbiente) {
-        this.humAmbiente = humAmbiente;
+    public void setHumTerrenoFinal(int humTerrenoFinal) {
+        this.humTerrenoFinal = humTerrenoFinal;
     }
 }

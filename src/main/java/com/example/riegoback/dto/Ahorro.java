@@ -1,22 +1,24 @@
 package com.example.riegoback.dto;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class Ahorro {
     private Long id;
-    private Date fecha;
+    private String fecha;
     private Long tiempoRiego;
     private Float aguaUsada;
     private String estadoRiego;
     private String uuid;
+    private Integer idDatos;
 
-    public Ahorro(Long id, Date fecha, Long tiempoRiego, Float aguaUsada,String estadoRiego, String uuid) {
+    public Ahorro(Long id, String fecha, Long tiempoRiego, Float aguaUsada,String estadoRiego, String uuid, Integer idDatos) {
         this.id = id;
         this.fecha = fecha;
         this.tiempoRiego = tiempoRiego;
         this.aguaUsada = aguaUsada;
         this.estadoRiego = estadoRiego;
         this.uuid = uuid;
+        this.idDatos = idDatos;
     }
 
     public Ahorro() {
@@ -30,11 +32,11 @@ public class Ahorro {
         this.id = id;
     }
 
-    public Date getFecha() {
+    public String getFecha() {
         return fecha;
     }
 
-    public void setFecha(Date fecha) {
+    public void setFecha(String fecha) {
         this.fecha = fecha;
     }
 
@@ -68,5 +70,13 @@ public class Ahorro {
 
     public void setEstadoRiego(String estadoRiego) {
         this.estadoRiego = estadoRiego;
+    }
+
+    public Integer getIdDatos() {
+        return idDatos;
+    }
+
+    public void setIdDatos(Integer idDatos) {
+        this.idDatos = idDatos;
     }
 }

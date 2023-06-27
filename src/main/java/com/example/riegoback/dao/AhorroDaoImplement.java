@@ -18,15 +18,16 @@ public class AhorroDaoImplement implements AhorroDao{
 
     @Override
     public void saveAhorro(Ahorro ahorro) throws ExceptionDao{
-        String INSERT = "INSERT INTO ahorro(fecha, tiempoRiego, aguaUsada, estadoRiego, uuid)values(?,?,?,?,?)";
+        String INSERT = "INSERT INTO ahorro(fecha, tiempoRiego, aguaUsada, estadoRiego, uuid, idDatos)values(?,?,?,?,?,?)";
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = mngrConexion.getConexion().prepareStatement(INSERT);
-            preparedStatement.setDate(1, (Date) ahorro.getFecha());
+            preparedStatement.setString(1, ahorro.getFecha());
             preparedStatement.setLong(2,ahorro.getTiempoRiego());
             preparedStatement.setFloat(3, ahorro.getAguaUsada());
             preparedStatement.setString(4, ahorro.getEstadoRiego());
             preparedStatement.setString(5, ahorro.getUuid());
+            preparedStatement.setInt(6, ahorro.getIdDatos());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -56,7 +57,7 @@ public class AhorroDaoImplement implements AhorroDao{
                 while (resultSet.next()) {
                     ahorro = new Ahorro();
                     ahorro.setId(resultSet.getLong("id"));
-                    ahorro.setFecha(resultSet.getTimestamp("fecha"));
+                    ahorro.setFecha(String.valueOf(resultSet.getTimestamp("fecha")));
                     ahorro.setTiempoRiego(resultSet.getLong("tiempoRiego"));
                     ahorro.setAguaUsada(resultSet.getFloat("aguaUsada"));
                     ahorro.setEstadoRiego(resultSet.getString("estadoRiego"));
@@ -90,7 +91,7 @@ public class AhorroDaoImplement implements AhorroDao{
             if(resultSet != null){
                 while (resultSet.next()) {
                     ahorro = new Ahorro();
-                    ahorro.setFecha(resultSet.getDate("fecha"));
+                    ahorro.setFecha(String.valueOf(resultSet.getDate("fecha")));
                     ahorro.setTiempoRiego(resultSet.getLong("tiempoRiego"));
                     ahorro.setAguaUsada(resultSet.getFloat("aguaUsada"));
                     ahorro.setEstadoRiego(resultSet.getString("estadoRiego"));
@@ -125,7 +126,7 @@ public class AhorroDaoImplement implements AhorroDao{
             if(resultSet != null){
                 while (resultSet.next()) {
                     ahorro = new Ahorro();
-                    ahorro.setFecha(resultSet.getDate("fecha"));
+                    ahorro.setFecha(String.valueOf(resultSet.getDate("fecha")));
                     ahorro.setTiempoRiego(resultSet.getLong("tiempoRiego"));
                     ahorro.setAguaUsada(resultSet.getFloat("aguaUsada"));
                     ahorro.setEstadoRiego(resultSet.getString("estadoRiego"));
@@ -147,7 +148,7 @@ public class AhorroDaoImplement implements AhorroDao{
     }
 
     @Override
-    public void deleteAllAhorro() throws ExceptionDao, ExceptionConexion {
+    public void deleteAllAhorro() throws ExceptionDao {
         String DELETE = "DELETE FROM ahorro";
         PreparedStatement preparedStatement = null;
         try {
@@ -167,7 +168,7 @@ public class AhorroDaoImplement implements AhorroDao{
     }
 
     @Override
-    public void deleteAhorro(Long id) throws ExceptionDao, ExceptionConexion {
+    public void deleteAhorro(Long id) throws ExceptionDao {
         String DELETE = "DELETE FROM ahorro WHERE id = ?";
         PreparedStatement preparedStatement = null;
         try {
